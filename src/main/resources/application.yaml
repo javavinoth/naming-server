@@ -1,0 +1,35 @@
+apibucket:
+  service-register:
+    port1: 8761
+    port2: 8762
+
+---
+spring:
+  profiles: eureka-peer1
+eureka:
+  instance:
+    appname: eureka-cluster
+    hostname: eureka-peer1
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka-peer2:${apibucket.service-register.port2}/eureka
+
+server:
+  port: ${apibucket.service-register.port1}
+
+---
+spring:
+  profiles: eureka-peer2
+eureka:
+  instance:
+    appname: eureka-cluster
+    hostname: eureka-peer2
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka-peer1:${apibucket.service-register.port1}/eureka
+server:
+  port: ${apibucket.service-register.port2}
